@@ -92,23 +92,6 @@ async function getContent() {
         }
 
         const elementStyle = getComputedStyle(element);
-        // const elementStyleEntries = Object.entries(elementStyle);
-
-        // let newElementStyle = "";
-
-        // for (const [cssProperty, value] of elementStyleEntries) {
-        //     if(value)
-        //   console.log(`${cssProperty}: ${value};`);
-        //   newElementStyle = newElementStyle + `${cssProperty}: ${value};`;
-        // }
-
-        // // elementStyleEntries.forEach(([cssProperty, value]) => {
-        // //   newElementStyle = newElementStyle + `${cssProperty}: ${value};`;
-        // // });
-
-        // // console.log("newElementStyle", newElementStyle);
-
-        // element.setAttribute("style", newElementStyle);
 
         Object.assign(elementEl.style, {
           fontSize: elementStyle.fontSize,
@@ -132,32 +115,6 @@ async function getContent() {
 
       const elementsInfo = [...allElements].forEach((element) => {
         let elementEl = createNewElement(element);
-
-        // const elementStyle = getComputedStyle(element);
-
-        // const newElementStyle = {};
-
-        // for (const cssProperty in elementStyle) {
-        //   {
-        //     newElementStyle[cssProperty] = elementStyle[cssProperty];
-        //   }
-        // }
-
-        // Object.assign(elementEl.style, {
-        //   fontSize: elementStyle.fontSize,
-        //   color: elementStyle.color,
-        //   fontFamily: elementStyle.fontFamily,
-        //   fontWeight: elementStyle.fontWeight,
-        //   fontStyle: elementStyle.fontStyle,
-        //   textAlign: elementStyle.textAlign,
-        //   textDecoration: elementStyle.textDecoration,
-        //   textTransform: elementStyle.textTransform,
-        //   lineHeight: elementStyle.lineHeight,
-        //   letterSpacing: elementStyle.letterSpacing,
-        //   wordSpacing: elementStyle.wordSpacing,
-        // });
-
-        console.log("after assigning, elementEl", elementEl);
 
         newHTML.appendChild(elementEl);
         console.log("nreHTML", newHTML);
