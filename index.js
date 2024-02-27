@@ -40,12 +40,14 @@ function copyToClip(str) {
   document.removeEventListener("copy", listener);
 }
 
-async function copyContent(str) {
+async function copyContent(stringy, events) {
+  console.log("stringy", stringy, "events", events);
   let [tab] = await chrome.tabs.query({ active: true });
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    func: () => {
-      copyToClip(str);
+    func: (stringy, events) => {
+      console.log("event", events, "str", stringy);
+      //   copyToClip(str);
     },
   });
 }
@@ -55,35 +57,107 @@ async function getContent() {
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: () => {
-      const newHTML = document.createElement("div");
-      const allElements = document.querySelectorAll("main h2, main p, main img");
+      console.log("holi from extension");
+      function getImageName(element) {
+        const ruta = element.currentSrc || element.attributes.srcset?.nodeValue;
 
-      const elementsInfo = [...allElements].forEach((element) => {
+        const questionMarkPosition = ruta.lastIndexOf("?");
+        const lastUnderscorePosition = ruta.lastIndexOf("_") + 1;
+
+        const shortRuta = ruta.slice(lastUnderscorePosition, questionMarkPosition);
+
+        console.log("shortRuta", shortRuta);
+        return shortRuta;
+      }
+
+      function createNewElement(element) {
         let elementEl;
 
         if (element.tagName === "IMG") {
           elementEl = document.createElement("div");
-          elementEl.innerHTML = `<p>Aqui va la imagen con esta ruta: ${
-            element.currentSrc || element.attributes.srcset?.nodeValue
-          }</p><p>Y este es el alt: ${element.alt}</p>`;
+          elementEl.style.border = "1px solid black";
+
+          const imageName = getImageName(element);
+
+          imageNameEl = document.createElement("p");
+          imageNameEl.textContent = `Image name: ${imageName}`;
+
+          imageAltEl = document.createElement("p");
+          imageAltEl.textContent = `Image alt: ${element.alt}`;
+
+          elementEl.append(imageNameEl, imageAltEl);
         } else {
           elementEl = document.createElement(element.tagName);
           elementEl.textContent = element.textContent;
         }
 
         const elementStyle = getComputedStyle(element);
+        // const elementStyleEntries = Object.entries(elementStyle);
 
-        elementEl.style.fontSize = elementStyle.fontSize;
-        elementEl.style.color = elementStyle.color;
-        elementEl.style.fontFamily = elementStyle.fontFamily;
-        elementEl.style.fontWeight = elementStyle.fontWeight;
-        elementEl.style.fontStyle = elementStyle.fontStyle;
-        elementEl.style.textAlign = elementStyle.textAlign;
-        elementEl.style.textDecoration = elementStyle.textDecoration;
-        elementEl.style.textTransform = elementStyle.textTransform;
-        elementEl.style.lineHeight = elementStyle.lineHeight;
-        elementEl.style.letterSpacing = elementStyle.letterSpacing;
-        elementEl.style.wordSpacing = elementStyle.wordSpacing;
+        // let newElementStyle = "";
+
+        // for (const [cssProperty, value] of elementStyleEntries) {
+        //     if(value)
+        //   console.log(`${cssProperty}: ${value};`);
+        //   newElementStyle = newElementStyle + `${cssProperty}: ${value};`;
+        // }
+
+        // // elementStyleEntries.forEach(([cssProperty, value]) => {
+        // //   newElementStyle = newElementStyle + `${cssProperty}: ${value};`;
+        // // });
+
+        // // console.log("newElementStyle", newElementStyle);
+
+        // element.setAttribute("style", newElementStyle);
+
+        Object.assign(elementEl.style, {
+          fontSize: elementStyle.fontSize,
+          color: elementStyle.color,
+          fontFamily: elementStyle.fontFamily,
+          fontWeight: elementStyle.fontWeight,
+          fontStyle: elementStyle.fontStyle,
+          textAlign: elementStyle.textAlign,
+          textDecoration: elementStyle.textDecoration,
+          textTransform: elementStyle.textTransform,
+          lineHeight: elementStyle.lineHeight,
+          letterSpacing: elementStyle.letterSpacing,
+          wordSpacing: elementStyle.wordSpacing,
+        });
+
+        return elementEl;
+      }
+
+      const newHTML = document.createElement("div");
+      const allElements = document.querySelectorAll("main h2, main p, main img");
+
+      const elementsInfo = [...allElements].forEach((element) => {
+        let elementEl = createNewElement(element);
+
+        // const elementStyle = getComputedStyle(element);
+
+        // const newElementStyle = {};
+
+        // for (const cssProperty in elementStyle) {
+        //   {
+        //     newElementStyle[cssProperty] = elementStyle[cssProperty];
+        //   }
+        // }
+
+        // Object.assign(elementEl.style, {
+        //   fontSize: elementStyle.fontSize,
+        //   color: elementStyle.color,
+        //   fontFamily: elementStyle.fontFamily,
+        //   fontWeight: elementStyle.fontWeight,
+        //   fontStyle: elementStyle.fontStyle,
+        //   textAlign: elementStyle.textAlign,
+        //   textDecoration: elementStyle.textDecoration,
+        //   textTransform: elementStyle.textTransform,
+        //   lineHeight: elementStyle.lineHeight,
+        //   letterSpacing: elementStyle.letterSpacing,
+        //   wordSpacing: elementStyle.wordSpacing,
+        // });
+
+        console.log("after assigning, elementEl", elementEl);
 
         newHTML.appendChild(elementEl);
         console.log("nreHTML", newHTML);
@@ -92,6 +166,17 @@ async function getContent() {
       console.log("elements from extension", elementsInfo);
       htmlToCopy = newHTML.innerHTML;
       console.log("htmlToCopy", htmlToCopy);
+
+      function listener(e) {
+        e.clipboardData.setData("text/html", htmlToCopy);
+        e.clipboardData.setData("text/plain", htmlToCopy);
+        e.preventDefault();
+      }
+      document.addEventListener("copy", listener);
+      document.execCommand("copy");
+      document.removeEventListener("copy", listener);
+
+      alert("Content copied to clipboard");
     },
   });
 }
@@ -99,4 +184,6 @@ async function getContent() {
 document.getElementById("myButton").addEventListener("click", sayHello);
 document.getElementById("myImages").addEventListener("click", getImages);
 document.getElementById("myContent").addEventListener("click", getContent);
-document.getElementById("copyContent").addEventListener("click", () => copyContent(htmlToCopy));
+document.getElementById("copyContent").addEventListener("click", (event) => {
+  copyContent(htmlToCopy, event);
+});
