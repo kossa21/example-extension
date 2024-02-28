@@ -89,23 +89,15 @@ async function getContent() {
         } else {
           elementEl = document.createElement(element.tagName);
           elementEl.textContent = element.textContent;
+          if (elementEl.textContent.length === 0) {
+            return ''
+          }
         }
-
         const elementStyle = getComputedStyle(element);
 
-        Object.assign(elementEl.style, {
-          fontSize: elementStyle.fontSize,
-          color: elementStyle.color,
-          fontFamily: elementStyle.fontFamily,
-          fontWeight: elementStyle.fontWeight,
-          fontStyle: elementStyle.fontStyle,
-          textAlign: elementStyle.textAlign,
-          textDecoration: elementStyle.textDecoration,
-          textTransform: elementStyle.textTransform,
-          lineHeight: elementStyle.lineHeight,
-          letterSpacing: elementStyle.letterSpacing,
-          wordSpacing: elementStyle.wordSpacing,
-        });
+         elementEl.style = {
+          ...elementStyle
+        }
 
         return elementEl;
       }
