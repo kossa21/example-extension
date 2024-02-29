@@ -1,13 +1,38 @@
+
+
 async function sayHello() {
   let [tab] = await chrome.tabs.query({ active: true });
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: () => {
-      console.log("holi from extension");
+      console.log("start extension");
       document.body.style.background = "red";
-      alert("Holiii from my extension <3");
+      alert("inside extension");
     },
   });
+}
+
+function createCopyButton(textToCopy) {
+  const button = document.createElement('button')
+  button.innerText = 'copy alt text'
+
+
+}
+
+function copyToClipboard(text) {
+  var paragraphEl = document.createElement('p');
+  performance.textContent = text
+  paragraphEl.select();
+  document.execCommand("copy");
+  
+  var copyBtn = document.getElementById("copyBtn");
+  copyBtn.innerText = "Copied!";
+  copyBtn.classList.add("copied");
+  
+  setTimeout(function() {
+    copyBtn.innerText = "Copy";
+    copyBtn.classList.remove("copied");
+  }, 2000);
 }
 
 async function getImages() {
@@ -52,6 +77,8 @@ async function copyContent(stringy, events) {
   });
 }
 
+
+
 async function getContent() {
   let [tab] = await chrome.tabs.query({ active: true });
   chrome.scripting.executeScript({
@@ -59,15 +86,15 @@ async function getContent() {
     func: () => {
       console.log("holi from extension");
       function getImageName(element) {
-        const ruta = element.currentSrc || element.attributes.srcset?.nodeValue;
+        const path = element.currentSrc || element.attributes.srcset?.nodeValue;
 
-        const questionMarkPosition = ruta.lastIndexOf("?");
-        const lastUnderscorePosition = ruta.lastIndexOf("_") + 1;
+        const questionMarkPosition = path.lastIndexOf("?");
+        const lastUnderscorePosition = path.lastIndexOf("_") + 1;
 
-        const shortRuta = ruta.slice(lastUnderscorePosition, questionMarkPosition);
+        const shortPath = path.slice(lastUnderscorePosition, questionMarkPosition);
 
-        console.log("shortRuta", shortRuta);
-        return shortRuta;
+        console.log("shortPath", shortPath);
+        return shortPath;
       }
 
       function createNewElement(element) {
@@ -90,7 +117,7 @@ async function getContent() {
           elementEl = document.createElement(element.tagName);
           elementEl.textContent = element.textContent;
           if (elementEl.textContent.length === 0) {
-            return ''
+            return null
           }
         }
         const elementStyle = getComputedStyle(element);
@@ -107,9 +134,10 @@ async function getContent() {
 
       const elementsInfo = [...allElements].forEach((element) => {
         let elementEl = createNewElement(element);
-
-        newHTML.appendChild(elementEl);
-        console.log("nreHTML", newHTML);
+        if (elementEl) {
+          newHTML.appendChild(elementEl);
+          console.log("nreHTML", newHTML);
+        }
       });
 
       console.log("elements from extension", elementsInfo);
@@ -130,9 +158,10 @@ async function getContent() {
   });
 }
 
-document.getElementById("myButton").addEventListener("click", sayHello);
+// document.getElementById("myButton").addEventListener("click", sayHello);
 document.getElementById("myImages").addEventListener("click", getImages);
 document.getElementById("myContent").addEventListener("click", getContent);
+document.getElementById("copyBtn").addEventListener("click", copyToClipboard);
 document.getElementById("copyContent").addEventListener("click", (event) => {
   copyContent(htmlToCopy, event);
 });

@@ -1,0 +1,35 @@
+body{
+    width: 250px;
+    height: 300px;
+    text-align: center;
+}
+main{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button{
+    padding: 5px;
+    background-color: transparent;
+    border: 1px solid #333;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+button:hover:enabled{
+    background-color: #333;
+    color: aliceblue;
+}
+
+#copyBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  #copyBtn.copied {
+    background-color: rgb(3, 172, 115);
+    border-color: rgb(0, 112, 75);
+  }
