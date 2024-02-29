@@ -1,5 +1,3 @@
-
-
 async function sayHello() {
   let [tab] = await chrome.tabs.query({ active: true });
   chrome.scripting.executeScript({
@@ -13,23 +11,21 @@ async function sayHello() {
 }
 
 function createCopyButton(textToCopy) {
-  const button = document.createElement('button')
-  button.innerText = 'copy alt text'
-
-
+  const button = document.createElement("button");
+  button.innerText = "copy alt text";
 }
 
 function copyToClipboard(text) {
-  var paragraphEl = document.createElement('p');
-  performance.textContent = text
+  var paragraphEl = document.createElement("p");
+  performance.textContent = text;
   paragraphEl.select();
   document.execCommand("copy");
-  
+
   var copyBtn = document.getElementById("copyBtn");
   copyBtn.innerText = "Copied!";
   copyBtn.classList.add("copied");
-  
-  setTimeout(function() {
+
+  setTimeout(function () {
     copyBtn.innerText = "Copy";
     copyBtn.classList.remove("copied");
   }, 2000);
@@ -77,8 +73,6 @@ async function copyContent(stringy, events) {
   });
 }
 
-
-
 async function getContent() {
   let [tab] = await chrome.tabs.query({ active: true });
   chrome.scripting.executeScript({
@@ -97,34 +91,44 @@ async function getContent() {
         return shortPath;
       }
 
+      function createNewImage(element) {
+        const elementEl = document.createElement("div");
+        elementEl.style.border = "1px solid black";
+
+        const imageName = getImageName(element);
+
+        imageNameEl = document.createElement("p");
+        imageNameEl.textContent = `Image name: ${imageName}`;
+
+        imageAltEl = document.createElement("p");
+        imageAltEl.textContent = `Image alt: ${element.alt}`;
+
+        elementEl.append(imageNameEl, imageAltEl);
+
+        return elementEl;
+      }
+
+      function createOtherHtmlElements(element) {
+        elementEl = document.createElement(element.tagName);
+        elementEl.textContent = element.textContent;
+
+        return elementEl;
+      }
+
       function createNewElement(element) {
         let elementEl;
 
         if (element.tagName === "IMG") {
-          elementEl = document.createElement("div");
-          elementEl.style.border = "1px solid black";
-
-          const imageName = getImageName(element);
-
-          imageNameEl = document.createElement("p");
-          imageNameEl.textContent = `Image name: ${imageName}`;
-
-          imageAltEl = document.createElement("p");
-          imageAltEl.textContent = `Image alt: ${element.alt}`;
-
-          elementEl.append(imageNameEl, imageAltEl);
+          elementEl = createNewImage(element);
         } else {
-          elementEl = document.createElement(element.tagName);
-          elementEl.textContent = element.textContent;
-          if (elementEl.textContent.length === 0) {
-            return null
-          }
+          elementEl = createOtherHtmlElements(element);
         }
+
         const elementStyle = getComputedStyle(element);
 
-         elementEl.style = {
-          ...elementStyle
-        }
+        elementEl.style = {
+          ...elementStyle,
+        };
 
         return elementEl;
       }
