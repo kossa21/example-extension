@@ -18,8 +18,8 @@ async function getContent() {
       }
 
       function createNewImage(element) {
-        const elementElement = document.createElement('div')
-        elementElement.style.border = '1px solid black'
+        const infoImageElementContainer = document.createElement('div')
+        infoImageElementContainer.style.border = '1px solid black'
 
         const imageName = getImageName(element)
 
@@ -29,27 +29,27 @@ async function getContent() {
         const imageAltElement = document.createElement('p')
         imageAltElement.textContent = `Image alt: ${element.alt}`
 
-        elementElement.append(imageNameElement, imageAltElement)
+        infoImageElementContainer.append(imageNameElement, imageAltElement)
 
-        return elementElement
+        return infoImageElementContainer
       }
 
       function createOtherHtmlElements(element) {
-        const elementElement = document.createElement(element.tagName)
-        elementElement.textContent = element.textContent
+        const dynamicElement = document.createElement(element.tagName)
+        dynamicElement.textContent = element.textContent
 
-        return elementElement
+        return dynamicElement
       }
 
       function createNewElement(element) {
-        const elementElement = element.tagName === 'IMG' ? createNewImage(element) : createOtherHtmlElements(element)
+        const bodyDynamicElement = element.tagName === 'IMG' ? createNewImage(element) : createOtherHtmlElements(element)
 
         const elementStyle = getComputedStyle(element)
 
-        elementElement.style = {
+        bodyDynamicElement.style = {
           ...elementStyle
         }
-        return elementElement
+        return bodyDynamicElement
       }
 
       const newHTML = document.createElement('div')
@@ -58,9 +58,9 @@ async function getContent() {
 
       const allElements = document.querySelectorAll(selectorAllElementsInsideMain)
       for (const element of allElements) {
-        const elementElement = createNewElement(element)
-        if (elementElement) {
-          newHTML.append(elementElement)
+        const elementToCopy = createNewElement(element)
+        if (elementToCopy) {
+          newHTML.append(elementToCopy)
           console.log('nreHTML', newHTML)
         }
       }
