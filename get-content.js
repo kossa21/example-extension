@@ -23,12 +23,12 @@ async function getContent() {
 
             function createNewImage(element) {
                 const infoImageElementContainer = document.createElement('div')
-                infoImageElementContainer.style.border = '1px solid black'
+                infoImageElementContainer.style.color = 'red'
 
                 const imageName = getImageName(element)
 
-                const imageNameElement = document.createElement('p')
-                imageNameElement.textContent = `Image name: ${imageName}`
+                const imageNameElement = document.createElement('h2')
+                imageNameElement.textContent = `------ Image here ------`
 
                 const imageAltElement = document.createElement('p')
                 imageAltElement.textContent = `Image alt: ${element.alt}`
