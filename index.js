@@ -134,8 +134,10 @@ async function getContent() {
       }
 
       const newHTML = document.createElement("div");
-      const allElements = document.querySelectorAll("main h2, main p, main img");
+      const selectorAllElementsInsideMain =
+        "main h2:not(.conversion h2), main p:not(.conversion p), main img:not(.conversion img)";
 
+      const allElements = document.querySelectorAll(selectorAllElementsInsideMain);
       const elementsInfo = [...allElements].forEach((element) => {
         let elementEl = createNewElement(element);
         if (elementEl) {
