@@ -1,24 +1,25 @@
-async function sayHello() {
+
+
+async function injectButtons() {
   let [tab] = await chrome.tabs.query({ active: true });
   chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: () => {
-      console.log("start extension");
-      document.body.style.background = "red";
-      alert("inside extension");
+      const button = document.createElement('button')
+      button.innerText = 'copy alt text'
+      button.classList.add('root')
+
+      const header = document.querySelector("header")
+      const imageHeader =  document.querySelector("header img")
+      header.append(button)
     },
   });
 }
 
-function createCopyButton(textToCopy) {
-  const button = document.createElement("button");
-  button.innerText = "copy alt text";
-}
 
-function copyToClipboard(text) {
-  var paragraphEl = document.createElement("p");
-  performance.textContent = text;
-  paragraphEl.select();
+function copyToClipboard() {
+  var copyText = document.getElementById("copyText");
+  copyText.select();
   document.execCommand("copy");
 
   var copyBtn = document.getElementById("copyBtn");
@@ -28,7 +29,7 @@ function copyToClipboard(text) {
   setTimeout(function () {
     copyBtn.innerText = "Copy";
     copyBtn.classList.remove("copied");
-  }, 2000);
+  }, 2000); // Change 2000 to the number of milliseconds you want the "Copied!" message to display
 }
 
 async function getImages() {
@@ -167,7 +168,10 @@ async function getContent() {
 // document.getElementById("myButton").addEventListener("click", sayHello);
 document.getElementById("myImages").addEventListener("click", getImages);
 document.getElementById("myContent").addEventListener("click", getContent);
-document.getElementById("copyBtn").addEventListener("click", copyToClipboard);
+document.getElementById("copyBtn").addEventListener("click", (e) => {
+  copyToClipboard(e)
+  injectButtons()
+});
 document.getElementById("copyContent").addEventListener("click", (event) => {
   copyContent(htmlToCopy, event);
 });
