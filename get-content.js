@@ -57,13 +57,27 @@ async function getContent() {
 
             function createOtherHtmlElements(element) {
                 const dynamicElement = document.createElement(element.tagName)
-                dynamicElement.textContent = element.textContent
+                dynamicElement.innerHTML = element.innerHTML
 
                 return dynamicElement
             }
 
             function createNewElement(element) {
                 let bodyDynamicElement
+
+                const isElementTextNode = element.nodeType === 3
+                const isElementImage = element.tagName.toLowerCase() === 'img'
+                const isElementOtherTextTag =
+                    !isElementTextNode && !isElementImage
+                const isElementTextEmpty = element.textContent.trim() === ''
+                const isElementP = element.tagName.toLowerCase() === 'p'
+
+                const isEmptyElement =
+                    isElementOtherTextTag && isElementTextEmpty
+
+                if (isEmptyElement) return
+
+                if (isElementImage) bodyDynamicElement = createNewImage(element)
 
                 switch (element.tagName.toLowerCase()) {
                     case 'img': {
