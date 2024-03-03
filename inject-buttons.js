@@ -40,6 +40,7 @@ async function injectButtons() {
         subtitle.textContent = contentName + ' text'
         paragraph.textContent = contentValue
 
+        descriptionContainer.classList.add('description-container')
         infoContainer.classList.add('info-container')
         infoContainer.append(paragraph, button)
         descriptionContainer.append(subtitle, infoContainer)
@@ -60,13 +61,13 @@ async function injectButtons() {
         header.append(bannerContainer)
       }
       addHeaderImageBanner()
-
+      
       function getImageName(element) {
         const path = element.currentSrc || element.attributes.srcset?.nodeValue
-
+        
         const questionMarkPosition = path.lastIndexOf('?')
         const lastUnderscorePosition = path.lastIndexOf('_') + 1
-
+        
         const shortPath = path.slice(lastUnderscorePosition, questionMarkPosition)
 
         return shortPath.replaceAll('-', '%20')
@@ -75,23 +76,5 @@ async function injectButtons() {
   })
 }
 
-function copyToClipboard() {
-  const copyText = document.querySelector('#copyText')
-  // @ts-ignore
-  copyText.select()
-  document.execCommand('copy')
 
-  const copyButton = document.querySelector('#copyBtn')
-  copyButton.textContent = 'Copied!'
-  copyButton.classList.add('copied')
-
-  setTimeout(function () {
-    copyButton.textContent = 'Copy'
-    copyButton.classList.remove('copied')
-  }, 1000)
-}
-
-document.querySelector('#copyBtn').addEventListener('click', () => {
-  copyToClipboard()
-  injectButtons()
-})
+document.querySelector('#copyBtn').addEventListener('click',injectButtons)

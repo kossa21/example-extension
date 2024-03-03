@@ -23,6 +23,9 @@ async function injectCssStyles() {
             display: flex;
             width: 100%;
             justify-content: space-between;
+        }
+        .description-container{
+              width: 50%;
           }
 
           .button-74 {
