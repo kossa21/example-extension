@@ -105,7 +105,7 @@ async function getContent() {
 
             const newHTML = document.createElement('div')
             const selectorAllElementsInsideMain =
-                'main h2:not(.conversion h2), main p:not(.conversion p), main img:not(.conversion img)'
+                'main h2:not(.conversion h2), main p:not(.conversion p):not(p > p), main img:not(.conversion img)'
 
             const allElements = document.querySelectorAll(
                 selectorAllElementsInsideMain
