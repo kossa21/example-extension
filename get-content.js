@@ -40,21 +40,46 @@ async function getContent() {
 
                 return infoImageElementContainer
             }
-        return infoImageElementContainer
-      }
+
+            function createNewParagraph(element) {
+                console.log(
+                    'receiving element:',
+                    element,
+                    'calling createNewParagraph'
+                )
+                const dynamicElement = document.createElement('p')
+                dynamicElement.textContent = element.innerHTML
+
+                console.log('dynamicElement', dynamicElement)
+
+                return dynamicElement
+            }
 
             function createOtherHtmlElements(element) {
                 const dynamicElement = document.createElement(element.tagName)
-                dynamicElement.textContent = element.innerHTML
+                dynamicElement.textContent = element.textContent
 
                 return dynamicElement
             }
 
             function createNewElement(element) {
-                const bodyDynamicElement =
-                    element.tagName === 'IMG'
-                        ? createNewImage(element)
-                        : createOtherHtmlElements(element)
+                let bodyDynamicElement
+
+                switch (element.tagName.toLowerCase()) {
+                    case 'img': {
+                        bodyDynamicElement = createNewImage(element)
+                        break
+                    }
+                    // case 'p': {
+                    //     bodyDynamicElement = createNewParagraph(element)
+                    //     break
+                    // }
+
+                    default: {
+                        bodyDynamicElement = createOtherHtmlElements(element)
+                        break
+                    }
+                }
 
                 const elementStyle = getComputedStyle(element)
 
